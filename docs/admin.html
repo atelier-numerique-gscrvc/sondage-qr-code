@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Statistiques du sondage</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="carte large" id="app">
+    <p class="surtitre">Espace administrateur</p>
+    <h1>Statistiques du sondage</h1>
+    <p class="doux">Saisissez la clé administrateur reçue par e-mail lors de l'installation.</p>
+    <input type="email" id="cle" placeholder="Clé administrateur" autocomplete="off" style="font-family:monospace">
+    <p class="erreur" id="err" hidden></p>
+    <div class="actions"><button class="btn" id="voir">Afficher les statistiques</button></div>
+  </main>
+  <script src="config.js"></script>
+  <script>
+  (function () {
+    var C = window.SONDAGE, app = document.getElementById("app");
+    var champ = document.getElementById("cle"), err = document.getElementById("err");
+    champ.type = "text";
+    try { champ.value = localStorage.getItem("sondage-cle-admin") || ""; } catch (e) {}
+    function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+    function dateFr(iso) { return new Date(iso).toLocaleString("fr-FR", { dateStyle: "full", timeStyle: "short", timeZone: "Europe/Paris" }); }
+
+    function demo() {
+      return Promise.resolve({ ok: true, total: 0, emails: { total: 0, envoyes: 0 },
+        statut: { etat: "ouvert", ouverture: new Date().toISOString(), fermeture: new Date(Date.now() + 7 * 864e5).toISOString() },
+        questions: C.questions.map(function (q) {
+          var o = q.type === "ouinon" ? ["Oui", "Non"] : q.type === "note" ? ["1 ★","2 ★","3 ★","4 ★","5 ★"] : (q.options || []);
+          return { texte: q.texte, type: q.type, repondants: 0, textes: [], resultats: o.map(function (l) { return { libelle: l, nombre: 0, pct: 0 }; }) };
+        }) });
+    }
+
+    function afficher(s) {
+      var etat = { avant: "pas encore ouvert", ouvert: "ouvert", ferme: "fermé" }[s.statut.etat];
+      var h = '<p class="surtitre">Espace administrateur</p><h1>' + esc(C.titre) + "</h1>" +
+        "<p><b>" + s.total + "</b> réponse(s). Sondage <b>" + etat + "</b> (du " + esc(dateFr(s.statut.ouverture)) +
+        " au " + esc(dateFr(s.statut.fermeture)) + ").</p>" +
+        '<p class="doux">' + s.emails.total + " personne(s) ont demandé les résultats par e-mail" +
+        (s.emails.envoyes ? ", " + s.emails.envoyes + " envoi(s) effectué(s)" : "") + ".</p>";
+      s.questions.forEach(function (q, i) {
+        h += '<section class="stat"><h3>' + (i + 1) + ". " + esc(q.texte) + "</h3>";
+        if (q.type === "texte") {
+          h += (q.textes && q.textes.length)
+            ? '<ul class="commentaires">' + q.textes.map(function (t) { return "<li>" + esc(t) + "</li>"; }).join("") + "</ul>"
+            : '<p class="doux">Aucun commentaire pour l\'instant.</p>';
+        } else {
+          if (q.moyenne != null) h += '<p class="doux">Moyenne : <b>' + q.moyenne + " / 5</b></p>";
+          q.resultats.forEach(function (r) {
+            h += '<div class="barre"><span>' + esc(r.libelle) + '</span><div class="piste"><div style="width:' + r.pct +
+              '%"></div></div><span class="val">' + r.pct + " % (" + r.nombre + ")</span></div>";
+          });
+        }
+        h += "</section>";
+      });
+      h += '<div class="actions"><button class="btn secondaire" onclick="location.reload()">Actualiser</button></div>';
+      app.innerHTML = h;
+    }
+
+    document.getElementById("voir").onclick = function () {
+      var cle = champ.value.trim();
+      err.hidden = true;
+      var p = !C.scriptUrl ? demo() :
+        fetch(C.scriptUrl + "?action=stats&cle=" + encodeURIComponent(cle)).then(function (r) { return r.json(); });
+      p.then(function (s) {
+        if (!s.ok) throw new Error(s.erreur === "cle" ? "Clé incorrecte." : "Erreur du serveur.");
+        try { localStorage.setItem("sondage-cle-admin", cle); } catch (e) {}
+        afficher(s);
+      }).catch(function (e) { err.textContent = e.message || "Impossible de joindre le serveur."; err.hidden = false; });
+    };
+    champ.onkeydown = function (e) { if (e.key === "Enter") document.getElementById("voir").click(); };
+  })();
+  </script>
+</body>
+</html>
