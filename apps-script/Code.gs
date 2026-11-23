@@ -41,7 +41,7 @@ var ONGLET_QUESTIONS = "Questions";
    1) À LANCER UNE SEULE FOIS : menu "Exécuter" > installer
    --------------------------------------------------------------------- */
 function installer() {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var ss = classeur_();
   feuille_(ONGLET_REPONSES, ["Horodatage"]);
   feuille_(ONGLET_EMAILS, ["Horodatage", "E-mail", "Résultats envoyés"]);
   feuille_(ONGLET_QUESTIONS, ["Id", "Type", "Question", "Options", "Ordre"]);
@@ -69,10 +69,12 @@ function installer() {
     body:
       "L'installation du sondage est terminée.\n\n" +
       "Votre clé administrateur (page statistiques) : " + cle + "\n\n" +
+      "Tableau des réponses (Google Sheet) : " + ss.getUrl() + "\n\n" +
       "Ouverture : " + CONFIG.OUVERTURE + "\nFermeture : " + CONFIG.FERMETURE + "\n\n" +
       "Les résultats seront envoyés automatiquement dans l'heure qui suit la fermeture.",
   });
   Logger.log("Installation OK. Clé administrateur : " + cle + " (également envoyée à " + moi + ")");
+  Logger.log("Tableau des réponses : " + ss.getUrl());
 }
 
 /* ---------------------------------------------------------------------
@@ -310,8 +312,21 @@ function compterEmails_() {
   return { total: n, envoyes: v.filter(function (x) { return x[0] instanceof Date; }).length };
 }
 
+// Le tableau Google Sheet des réponses : celui auquel le script est rattaché,
+// sinon un tableau "Sondage QR code — réponses" créé automatiquement dans votre Drive.
+function classeur_() {
+  var actif = SpreadsheetApp.getActiveSpreadsheet();
+  if (actif) return actif;
+  var props = PropertiesService.getScriptProperties();
+  var id = props.getProperty("ID_CLASSEUR");
+  if (id) return SpreadsheetApp.openById(id);
+  var ss = SpreadsheetApp.create("Sondage QR code — réponses");
+  props.setProperty("ID_CLASSEUR", ss.getId());
+  return ss;
+}
+
 function feuille_(nom, entetes) {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var ss = classeur_();
   var f = ss.getSheetByName(nom);
   if (!f) {
     f = ss.insertSheet(nom);

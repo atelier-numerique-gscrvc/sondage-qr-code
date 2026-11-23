@@ -41,23 +41,27 @@ Coût : 0 €. Il faut seulement un compte GitHub et un compte Google (Gmail).
 3. Après 1 à 2 minutes, le sondage est en ligne sur
    **https://edumontet.github.io/sondage-qr-code/** (en « mode démo » tant que l'étape 3 n'est pas faite).
 
-### Étape 2 — La Google Sheet et son script
+### Étape 2 — Le script Google (sur ordinateur, pas sur téléphone)
 
-1. Allez sur <https://sheets.new> (crée une feuille vide) et nommez-la « Sondage IA ».
-2. Menu **Extensions → Apps Script**.
-3. Effacez le contenu de `Code.gs` et collez **tout** le fichier `apps-script/Code.gs`.
-4. En haut du script, réglez les dates dans `CONFIG` :
+1. Connecté à votre compte Google, ouvrez <https://script.google.com/create>.
+   Un éditeur de code s'ouvre avec un projet « Projet sans titre » : cliquez sur ce nom
+   et renommez-le « Sondage QR code ».
+2. Ouvrez [le script](https://raw.githubusercontent.com/edumontet/sondage-qr-code/main/apps-script/Code.gs),
+   copiez tout (Ctrl+A puis Ctrl+C), revenez dans l'éditeur, effacez son contenu,
+   collez (Ctrl+V) et enregistrez (icône disquette).
+3. Réglez au besoin les dates dans `CONFIG`, en haut du script :
    ```js
    OUVERTURE: "2026-11-23T08:00:00+01:00",
    FERMETURE: "2026-11-30T18:00:00+01:00",
    ```
-   (`+01:00` = heure de Paris en hiver, `+02:00` en été). Enregistrez (icône disquette).
-5. Dans la liste des fonctions en haut, choisissez **installer** puis cliquez **Exécuter**.
+   (`+01:00` = heure de Paris en hiver, `+02:00` en été). Enregistrez.
+4. Dans la liste déroulante à côté de **Exécuter**, choisissez **installer**, puis **Exécuter**.
    - Google demande des autorisations : *Examiner les autorisations* → votre compte →
-     *Paramètres avancés* → *Accéder à Sondage IA (non sécurisé)* → *Autoriser*.
+     *Paramètres avancés* → *Accéder à Sondage QR code (non sécurisé)* → *Autoriser*.
      (L'avertissement est normal : c'est votre propre script, non vérifié par Google.)
-   - Vous recevez un e-mail avec votre **clé administrateur**. Gardez-la.
-6. **Déployer → Nouveau déploiement** → roue dentée → **Application Web** :
+   - Le script crée tout seul le tableau « Sondage QR code — réponses » dans votre Google Drive.
+   - Vous recevez un e-mail avec votre **clé administrateur** et le lien du tableau. Gardez-le.
+5. **Déployer → Nouveau déploiement** → roue dentée → **Application Web** :
    - Exécuter en tant que : **Moi**
    - Qui a accès : **Tout le monde**
    - **Déployer**, puis copiez l'**URL de l'application Web** (elle finit par `/exec`).
@@ -74,7 +78,7 @@ le bandeau « Mode démo » disparaît : le sondage est opérationnel.
 ### Étape 4 — Tester
 
 1. Scannez le QR code avec votre téléphone, répondez en laissant votre adresse.
-2. La réponse apparaît dans l'onglet **Réponses** de la Google Sheet.
+2. La réponse apparaît dans l'onglet **Réponses** du tableau (lien dans l'e-mail d'installation).
 3. Ouvrez `https://edumontet.github.io/sondage-qr-code/admin.html` et saisissez la clé : les statistiques s'affichent.
 4. Dans Apps Script, exécutez **testerEmailResultats** pour recevoir un aperçu de l'e-mail
    qu'auront les participants (envoyé à vous seul).
@@ -104,7 +108,7 @@ une fois le sondage ouvert. Les statistiques s'adaptent toutes seules.
 
 ## Réutiliser pour une autre conférence
 
-1. Créez une nouvelle Google Sheet et refaites l'étape 2 (nouvelles dates, nouvelle URL).
+1. Créez un nouveau projet sur script.google.com et refaites l'étape 2 (nouvelles dates, nouvelle URL).
 2. Mettez la nouvelle URL dans `config.js`. Le même QR code continue de fonctionner.
 
 ## Modifier les dates après coup
