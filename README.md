@@ -25,7 +25,7 @@ Coût : 0 €. Il faut seulement un compte GitHub et un compte Google (Gmail).
 | `docs/index.html`, `app.js`, `style.css` | Le sondage lui-même |
 | `docs/admin.html` | Page statistiques (protégée par une clé) |
 | `apps-script/Code.gs` | Script Google : stockage, statistiques, envois automatiques. **Dates d'ouverture/fermeture** dans son bloc `CONFIG` |
-| `qrcode-sondage.png` / `.svg` | QR code vers `https://edumontet.github.io/sondage-qr-code/` |
+| `qrcode-sondage.png` / `.svg` | QR code vers `https://atelier-numerique-gscrvc.github.io/sondage-qr-code/` |
 
 ---
 
@@ -39,14 +39,14 @@ Coût : 0 €. Il faut seulement un compte GitHub et un compte Google (Gmail).
    - Source : *Deploy from a branch*
    - Branch : `main`, dossier `/docs` → **Save**
 3. Après 1 à 2 minutes, le sondage est en ligne sur
-   **https://edumontet.github.io/sondage-qr-code/** (en « mode démo » tant que l'étape 3 n'est pas faite).
+   **https://atelier-numerique-gscrvc.github.io/sondage-qr-code/** (en « mode démo » tant que l'étape 3 n'est pas faite).
 
 ### Étape 2 — Le script Google (sur ordinateur, pas sur téléphone)
 
 1. Connecté à votre compte Google, ouvrez <https://script.google.com/create>.
    Un éditeur de code s'ouvre avec un projet « Projet sans titre » : cliquez sur ce nom
    et renommez-le « Sondage QR code ».
-2. Ouvrez [le script](https://raw.githubusercontent.com/edumontet/sondage-qr-code/main/apps-script/Code.gs),
+2. Ouvrez [le script](https://raw.githubusercontent.com/atelier-numerique-gscrvc/sondage-qr-code/main/apps-script/Code.gs),
    copiez tout (Ctrl+A puis Ctrl+C), revenez dans l'éditeur, effacez son contenu,
    collez (Ctrl+V) et enregistrez (icône disquette).
 3. Réglez au besoin les dates dans `CONFIG`, en haut du script :
@@ -79,13 +79,13 @@ le bandeau « Mode démo » disparaît : le sondage est opérationnel.
 
 1. Scannez le QR code avec votre téléphone, répondez en laissant votre adresse.
 2. La réponse apparaît dans l'onglet **Réponses** du tableau (lien dans l'e-mail d'installation).
-3. Ouvrez `https://edumontet.github.io/sondage-qr-code/admin.html` et saisissez la clé : les statistiques s'affichent.
+3. Ouvrez `https://atelier-numerique-gscrvc.github.io/sondage-qr-code/admin.html` et saisissez la clé : les statistiques s'affichent.
 4. Dans Apps Script, exécutez **testerEmailResultats** pour recevoir un aperçu de l'e-mail
    qu'auront les participants (envoyé à vous seul).
 5. Avant la conférence, supprimez vos lignes de test dans les onglets **Réponses** et **E-mails**.
 
 > Après un test, votre téléphone affiche « Vous avez déjà répondu ». Pour répondre à nouveau,
-> ajoutez `?refaire` à l'adresse : `https://edumontet.github.io/sondage-qr-code/?refaire`.
+> ajoutez `?refaire` à l'adresse : `https://atelier-numerique-gscrvc.github.io/sondage-qr-code/?refaire`.
 
 ---
 
