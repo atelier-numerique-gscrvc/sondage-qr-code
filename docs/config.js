@@ -6,7 +6,7 @@
 window.SONDAGE = {
   // Adresse du script Google (étape 2 du guide). Laissez vide pour le
   // "mode démo" : le sondage fonctionne mais rien n'est enregistré.
-  scriptUrl: "",
+  scriptUrl: "https://script.google.com/macros/s/AKfycbx-5u3TptOv53S-BMV9nNMli1vIChUKpMptAo3rUd_jqNLpdChDHOLm0pOdZ8yvahMe/exec",
 
   titre: "Sensibilisation à l'intelligence artificielle",
 
